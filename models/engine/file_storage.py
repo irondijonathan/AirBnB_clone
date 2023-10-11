@@ -4,6 +4,7 @@ Defines the FileStorage class
 """
 
 import json
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -13,20 +14,23 @@ class FileStorage:
 
     __file_path = "file.json"
     __objects = {}
+    __classes = {
+            "BaseModel": BaseModel
+            }
 
     def all(self):
         """
         Returns the __objects dictionary
         """
 
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         """
         Sets in __objects the obj with key <obj class name>.id
         """
         key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        FileStorage.__objects[key] = obj.to_dict()
+        self.__objects[key] = obj
 
     def save(self):
         """
@@ -34,8 +38,11 @@ class FileStorage:
         """
 
         try:
-            with open(FileStorage.__file_path, "w", encoding='utf-8') as f:
-                f.write(json.dumps(FileStorage.__objects))
+            with open(self.__file_path, "w", encoding='utf-8') as f:
+                save_obj = {}
+                for key in self.__objects:
+                    save_obj[key] = self.__objects[key].to_dict()
+                f.write(json.dumps(save_obj))
         except Exception:
             pass
 
@@ -45,8 +52,12 @@ class FileStorage:
         """
 
         try:
-            with open(FileStorage.__file_path, "r", encoding='utf-8') as f:
+            with open(self.__file_path, "r", encoding='utf-8') as f:
                 json_str = f.read()
-                FileStorage.__objects = json.loads(json_str)
-        except Exception:
+                load_obj = json.loads(json_str)
+                for key in load_obj:
+                    obj = load_obj[key]
+                    self.__objects[key] =\
+                        self.__classes[obj["__class__"]](**obj)
+        except Exception as ex:
             pass
