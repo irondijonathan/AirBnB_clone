@@ -5,6 +5,7 @@ Defines the HBNBCommand class
 
 import cmd
 import models
+import shlex as sh
 from models.base_model import BaseModel
 
 
@@ -66,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
         if line == "":
             print("** class name missing **")
         else:
-            args = line.split()
+            args = sh.split(line)
             if args[0] not in self.__classes:
                 print("** class doesn't exist **")
             elif len(args) < 2 or args[1] == "":
@@ -86,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
         if line == "":
             print("** class name missing **")
         else:
-            args = line.split()
+            args = sh.split(line)
             if args[0] not in self.__classes:
                 print("** class doesn't exist **")
             elif len(args) < 2 or args[1] == "":
@@ -133,7 +134,7 @@ class HBNBCommand(cmd.Cmd):
         if line == "":
             print("** class name missing **")
         else:
-            args = line.split()
+            args = sh.split(line)
             if args[0] not in self.__classes:
                 print("** class doesn't exist **")
             elif len(args) < 2 or args[1] == "":
