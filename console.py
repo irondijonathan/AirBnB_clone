@@ -25,8 +25,9 @@ class HBNBCommand(cmd.Cmd):
         self.prompt = "(hbnb)"
 
     def do_EOF(self, line):
-        """End of File command
+        """Closes the program when recieving End of File command
         """
+        print("")
         return True
 
     def do_quit(self, line):
@@ -45,12 +46,14 @@ class HBNBCommand(cmd.Cmd):
         and prints the id
         """
 
-        if line == "":
+        if not line:
             print("** class name missing **")
-        elif line not in self.__classes:
+            return
+        args = sh.split(line)
+        if args[0] not in self.__classes:
             print("** class doesn't exist **")
         else:
-            obj = self.__classes[line]()
+            obj = self.__classes[args[0]]()
             obj.save()
             print(obj.id)
 
@@ -64,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
         based on the class name and id
         """
 
-        if line == "":
+        if not line:
             print("** class name missing **")
         else:
             args = sh.split(line)
@@ -84,7 +87,7 @@ class HBNBCommand(cmd.Cmd):
     def do_destroy(self, line):
         """Deletes an instance based on the class name and id"""
 
-        if line == "":
+        if not line:
             print("** class name missing **")
         else:
             args = sh.split(line)
@@ -104,13 +107,15 @@ class HBNBCommand(cmd.Cmd):
         instances based or not on the class name.
         """
         objs = models.storage.all()
-        if line == "":
+        if not line:
             print([str(objs[x]) for x in objs])
-        elif line not in self.__classes:
+            return
+        args = sh.split(line)
+        if args[0] not in self.__classes:
             print("** class doesn't exist **")
         else:
             print([str(objs[x]) for x in objs
-                  if line == objs[x].__class__.__name__])
+                  if args[0] == objs[x].__class__.__name__])
 
     def help_all(self):
         print("Prints all string representation of all instances ",
@@ -131,7 +136,7 @@ class HBNBCommand(cmd.Cmd):
     def do_update(self, line):
         """Updates an instance based on class name and id"""
 
-        if line == "":
+        if not line:
             print("** class name missing **")
         else:
             args = sh.split(line)
