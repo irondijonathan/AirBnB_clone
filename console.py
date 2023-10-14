@@ -7,7 +7,7 @@ import cmd
 import models
 import shlex as sh
 from models.base_model import BaseModel
-from models.user  import User
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
