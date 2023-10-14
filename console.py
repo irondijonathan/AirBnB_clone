@@ -22,7 +22,7 @@ class HBNBCommand(cmd.Cmd):
     def __init__(self):
         """ Creates an HBNBCommand instance"""
         super().__init__()
-        self.prompt = "(hbnb)"
+        self.prompt = "(hbnb) "
 
     def do_EOF(self, line):
         """Closes the program when recieving End of File command
