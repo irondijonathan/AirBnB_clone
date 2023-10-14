@@ -7,6 +7,7 @@ import cmd
 import models
 import shlex as sh
 from models.base_model import BaseModel
+from models.user  import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -16,7 +17,8 @@ class HBNBCommand(cmd.Cmd):
     """
 
     __classes = {
-            "BaseModel": BaseModel
+            "BaseModel": BaseModel,
+            "User": User
             }
 
     def __init__(self):
