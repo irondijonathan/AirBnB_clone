@@ -6,7 +6,7 @@ Defines the HBNBCommand class
 import cmd
 import models
 import re
-import shlex as sh
+from shlex import split
 from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
@@ -14,6 +14,24 @@ from models.place import Place
 from models.review import Review
 from models.state import State
 from models.user import User
+
+
+def parse(line):
+    curly_braces = re.search(r"\{(.*?)\}", line)
+    brackets = re.search(r"\[(.*?)\]", line)
+    if curly_braces is None:
+        if brackets is None:
+            return [i.strip(",") for i in split(line)]
+        else:
+            lexer = split(line[:brackets.span()[0]])
+            retl = [i.strip(",") for i in lexer]
+            retl.append(brackets.group())
+            return retl
+    else:
+        lexer = split(line[:curly_braces.span()[0]])
+        retl = [i.strip(",") for i in lexer]
+        retl.append(curly_braces.group())
+        return retl
 
 
 class HBNBCommand(cmd.Cmd):
@@ -83,7 +101,7 @@ class HBNBCommand(cmd.Cmd):
         if not line:
             print("** class name missing **")
             return
-        args = sh.split(line)
+        args = parse(line)
         if args[0] not in self.__classes:
             print("** class doesn't exist **")
         else:
@@ -104,7 +122,7 @@ class HBNBCommand(cmd.Cmd):
         if not line:
             print("** class name missing **")
         else:
-            args = sh.split(line)
+            args = parse(line)
             if args[0] not in self.__classes:
                 print("** class doesn't exist **")
             elif len(args) < 2 or args[1] == "":
@@ -124,7 +142,7 @@ class HBNBCommand(cmd.Cmd):
         if not line:
             print("** class name missing **")
         else:
-            args = sh.split(line)
+            args = parse(line)
             if args[0] not in self.__classes:
                 print("** class doesn't exist **")
             elif len(args) < 2 or args[1] == "":
@@ -144,7 +162,7 @@ class HBNBCommand(cmd.Cmd):
         if not line:
             print([str(objs[x]) for x in objs])
             return
-        args = sh.split(line)
+        args = parse(line)
         if args[0] not in self.__classes:
             print("** class doesn't exist **")
         else:
@@ -169,32 +187,54 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """Updates an instance based on class name and id"""
+        args = parse(line)
+        obj_dict = models.storage.all()
 
-        if not line:
+        if len(args) == 0:
             print("** class name missing **")
-        else:
-            args = sh.split(line)
-            if args[0] not in self.__classes:
-                print("** class doesn't exist **")
-            elif len(args) < 2 or args[1] == "":
-                print("** instance id missing **")
-            elif f"{args[0]}.{args[1]}" not in models.storage.all():
-                print("** no instance found **")
-            elif len(args) < 3 or args[2] == "":
-                print("** attribute name missing **")
-            elif len(args) < 4 or args[3] == "":
+            return False
+        if args[0] not in self.__classes:
+            print("** class doesn't exist **")
+            return False
+        if len(args) == 1:
+            print("** instance id missing **")
+            return False
+        if f"{args[0]}.{args[1]}" not in obj_dict:
+            print("** no instance found **")
+            return False
+        if len(args) == 2:
+            print("** attribute name missing **")
+            return False
+        if len(args) == 3:
+            try:
+                type(eval(args[2])) != dict
+            except NameError:
                 print("** value missing **")
-            else:
-                obj = models.storage.all()[f"{args[0]}.{args[1]}"]
+                return False
+        if len(args) >= 4:
+            obj = obj_dict[f"{args[0]}.{args[1]}"]
+            if args[2] in obj.__class__.__dict__.keys():
                 obj.__dict__[args[2]] = self.convert_to_dest_type(
-                        args[3], obj.__dict__[args[2]])
-                models.storage.save()
+                        args[3], obj.__class__.__dict__[args[2]])
+            else:
+                obj.__dict__[args[2]] = args[3]
+        elif type(eval(args[2])) is dict:
+            obj = obj_dict[f"{args[0]}.{args[1]}"]
+            changes = eval(args[2])
+            for k, v in changes.items():
+                if (k in obj.__class__.__dict__.keys() and
+                        type(obj.__class__.__dict__[k]) in {str, int, float}):
+                    valtype = type(obj.__class__.__dict__[k])
+                    obj.__dict__[k] = valtype(v)
+                else:
+                    obj.__dict__[k] = v
+        models.storage.save()
 
     def do_count(self, line):
         """Counts the number of instances of a class"""
 
         count = 0
-        args = sh.split(line)
+        args = parse(line)
         for obj in models.storage.all().values():
             if args[0] == obj.__class__.__name__:
                 count += 1

@@ -419,36 +419,36 @@ class TestConsoleClass(unittest.TestCase):
         """test alternative destroy with [class].destroy(id)"""
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("create User")
-            user_id = val.getvalue()
+            user_id = val.getvalue().strip('\n')
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("User.destroy(\"" + user_id + "\")")
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("User.count()")
-            self.assertTrue(int(val.getvalue()) == 0)
+            self.assertTrue(int(val.getvalue()) == 0, val.getvalue())
 
     def test_alternative_update1(self):
         """test alternative update with [class].show"""
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("create User")
-            user_id = val.getvalue()
+            user_id = val.getvalue().strip('\n')
         with patch('sys.stdout', new=StringIO()) as val:
             line = "\", \"name\", \"betty\")"
             HBNBCommand().onecmd("User.update(\"" + user_id + line)
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("User.show(\"" + user_id + "\")")
-            self.assertTrue("betty" in val.getvalue())
+            self.assertTrue("betty" in val.getvalue(), val.getvalue())
 
     def test_alternative_update2(self):
         """test alternative update with [class].show"""
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("create User")
-            user_id = val.getvalue()
+            user_id = val.getvalue().strip('\n')
         with patch('sys.stdout', new=StringIO()) as val:
             line = "\", {'first_name': 'John', 'age': 89})"
             HBNBCommand().onecmd("User.update(\"" + user_id + line)
         with patch('sys.stdout', new=StringIO()) as val:
             HBNBCommand().onecmd("User.show(\"" + user_id + "\")")
-            self.assertTrue("John" in val.getvalue())
+            self.assertTrue("John" in val.getvalue(), val.getvalue())
 
 
 if __name__ == '__main__':
