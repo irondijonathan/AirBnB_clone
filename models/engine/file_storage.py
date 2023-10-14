@@ -4,6 +4,7 @@ Defines the FileStorage class
 """
 
 import json
+from models.amenity import Amenity
 from models.base_model import BaseModel
 from models.city import City
 from models.place import Place
@@ -20,6 +21,7 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
     __classes = {
+            "Amenity": Amenity,
             "BaseModel": BaseModel,
             "City": City,
             "Place": Place,
