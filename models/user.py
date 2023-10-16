@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-"""To defint the user class"""
+"""This is To define the user class"""
 from models.base_model import BaseModel
 
 
 class User(BaseModel):
-    """This represents a user
+    """This is the representation of a user
 
     Public Class Attributes:
     email: email of user(str)

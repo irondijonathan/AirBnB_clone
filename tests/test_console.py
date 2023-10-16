@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Unit test for the file storage class
+""" This is Unit test for the file storage class
 """
 import unittest
 import json
@@ -12,7 +12,7 @@ import os
 
 
 class TestConsoleClass(unittest.TestCase):
-    """TestConsoleClass resume
+    """This is TestConsoleClass resume
     Args:
         unittest (): Propertys for unit testing
     """
@@ -20,13 +20,13 @@ class TestConsoleClass(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
-        """ condition to test file saving """
+        """ This is condition to test file saving """
         with open("test.json", 'w'):
             FileStorage._FileStorage__file_path = "test.json"
             FileStorage._FileStorage__objects = {}
 
     def tearDown(self):
-        """ destroys created file """
+        """ This destroys created file """
         FileStorage._FileStorage__file_path = "file.json"
         try:
             os.remove("test.json")
@@ -34,15 +34,15 @@ class TestConsoleClass(unittest.TestCase):
             pass
 
     def test_module_doc(self):
-        """ check for module documentation """
+        """ This check for module documentation """
         self.assertTrue(len(HBNBCommand.__doc__) > 0)
 
     def test_class_doc(self):
-        """ check for documentation """
+        """ This check for documentation """
         self.assertTrue(len(HBNBCommand.__doc__) > 0)
 
     def test_method_docs(self):
-        """ check for method documentation """
+        """ This check for method documentation """
         for func in dir(HBNBCommand):
             self.assertTrue(len(func.__doc__) > 0)
 

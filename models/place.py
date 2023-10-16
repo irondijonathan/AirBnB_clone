@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-"""Definition of the Place class"""
+"""This is the Definition of the Place class"""
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """This represents a Place
+    """This is the representation of a Place
 
     Public Class Attributes:
     city_id: Id of the city - City.id (str)
